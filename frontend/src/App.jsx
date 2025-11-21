@@ -17,8 +17,8 @@ function App() {
 
 	const fetchQuotes = async () => {
 		try {
-			const url = maxAge === "all" 
-				? "/api/quotes" 
+			const url = maxAge === "all"
+				? "/api/quotes"
 				: `/api/quotes?max_age=${maxAge}`;
 			const response = await fetch(url);
 			if (!response.ok) {
@@ -38,7 +38,7 @@ function App() {
 		const formData = new FormData();
 		formData.append("name", name);
 		formData.append("message", message);
-		
+
 		try {
 			const response = await fetch("/api/quote", {
 				method: "POST",
@@ -71,41 +71,44 @@ function App() {
 			<img src={quotebookLogo} alt="Quote Book Logo" className="logo" />
 			<h1>Hack at UCI Tech Deliverable</h1>
 
-			<h2>Submit a quote</h2>
+			<h2 style={{ textAlign: "center" }}>Submit a quote</h2>
 			<form onSubmit={handleSubmit}>
 				<label htmlFor="input-name">Name</label>
-				<input 
-					type="text" 
-					name="name" 
-					id="input-name" 
+				<input
+					type="text"
+					name="name"
+					id="input-name"
 					value={name}
 					onChange={(e) => setName(e.target.value)}
-					required 
+					required
 				/>
 				<label htmlFor="input-message">Quote</label>
-				<input 
-					type="text" 
-					name="message" 
-					id="input-message" 
+				<input
+					type="text"
+					name="message"
+					id="input-message"
 					value={message}
 					onChange={(e) => setMessage(e.target.value)}
-					required 
+					required
 				/>
 				<button type="submit">Submit</button>
 			</form>
+			<div style={{ textAlign: "center" }}>
+				<h2 style={{ textAlign: "center" }}>Previous Quotes</h2>
+				<label htmlFor="quote-filter">Filter by age:</label>
 
-			<h2>Previous Quotes</h2>
-			<label htmlFor="quote-filter">Filter by age:</label>
-			<select 
-				id="quote-filter" 
-				value={maxAge} 
-				onChange={(e) => setMaxAge(e.target.value)}
-			>
-				<option value="all">All</option>
-				<option value="week">Last Week</option>
-				<option value="month">Last Month</option>
-				<option value="year">Last Year</option>
-			</select>
+				<select
+					id="quote-filter"
+					value={maxAge}
+					onChange={(e) => setMaxAge(e.target.value)}
+				>
+					<option value="all">All</option>
+					<option value="week">Last Week</option>
+					<option value="month">Last Month</option>
+					<option value="year">Last Year</option>
+				</select>
+			</div>
+
 			<div className="messages">
 				{quotes.map((quote, index) => (
 					<QuoteItem key={index} quote={quote} />
