@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Snackbar, Alert } from "@mui/material";
 import "./App.css";
 import QuoteItem from "./QuoteItem";
 
@@ -7,6 +8,7 @@ function App() {
 	const [maxAge, setMaxAge] = useState("all");
 	const [name, setName] = useState("");
 	const [message, setMessage] = useState("");
+	const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
 	useEffect(() => {
 		fetchQuotes();
@@ -19,13 +21,14 @@ function App() {
 				: `/api/quotes?max_age=${maxAge}`;
 			const response = await fetch(url);
 			if (!response.ok) {
-				console.error("Failed to fetch quotes:", response.status, response.statusText);
+				const errorMessage = `Failed to fetch quotes: ${response.status} ${response.statusText}`;
+				setSnackbar({ open: true, message: errorMessage, severity: "error" });
 				return;
 			}
 			const data = await response.json();
 			setQuotes(data.quotes || []);
 		} catch (error) {
-			console.error("Error fetching quotes:", error);
+			setSnackbar({ open: true, message: `Error fetching quotes: ${error.message}`, severity: "error" });
 		}
 	};
 
@@ -40,15 +43,25 @@ function App() {
 				method: "POST",
 				body: formData
 			});
-			
 			if (response.ok) {
 				setName("");
 				setMessage("");
+				setSnackbar({ open: true, message: "Quote submitted successfully!", severity: "success" });
 				await fetchQuotes();
+			} else {
+				const errorText = await response.text();
+				setSnackbar({ open: true, message: `Failed to submit quote: ${response.status} ${errorText}`, severity: "error" });
 			}
 		} catch (error) {
-			console.error("Error submitting quote:", error);
+			setSnackbar({ open: true, message: `Error submitting quote: ${error.message}`, severity: "error" });
 		}
+	};
+
+	const handleCloseSnackbar = (event, reason) => {
+		if (reason === "clickaway") {
+			return;
+		}
+		setSnackbar({ ...snackbar, open: false });
 	};
 
 
@@ -96,6 +109,16 @@ function App() {
 					<QuoteItem key={index} quote={quote} />
 				))}
 			</div>
+			<Snackbar
+				open={snackbar.open}
+				autoHideDuration={6000}
+				onClose={handleCloseSnackbar}
+				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+			>
+				<Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
+					{snackbar.message}
+				</Alert>
+			</Snackbar>
 		</div>
 	);
 }
