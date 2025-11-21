@@ -26,14 +26,20 @@ function App() {
 		formData.append("name", name);
 		formData.append("message", message);
 		
-		await fetch("/api/quote", {
-			method: "POST",
-			body: formData
-		});
-		
-		setName("");
-		setMessage("");
-		fetchQuotes();
+		try {
+			const response = await fetch("/api/quote", {
+				method: "POST",
+				body: formData
+			});
+			
+			if (response.ok) {
+				setName("");
+				setMessage("");
+				await fetchQuotes();
+			}
+		} catch (error) {
+			console.error("Error submitting quote:", error);
+		}
 	};
 
 	const formatTime = (timeString) => {
