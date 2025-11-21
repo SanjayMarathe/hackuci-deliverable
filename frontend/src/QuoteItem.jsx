@@ -1,4 +1,14 @@
+import { useState } from "react";
+import "./QuoteItem.css";
+
 function QuoteItem({ quote }) {
+	const [isExpanded, setIsExpanded] = useState(false);
+	const MAX_LENGTH = 150;
+	const isLong = quote.message.length > MAX_LENGTH;
+	const displayMessage = isLong && !isExpanded 
+		? quote.message.substring(0, MAX_LENGTH) + "..."
+		: quote.message;
+
 	const formatTime = (timeString) => {
 		const date = new Date(timeString);
 		const now = new Date();
@@ -24,10 +34,20 @@ function QuoteItem({ quote }) {
 	};
 
 	return (
-		<div>
-			<p>{quote.name}</p>
-			<p>{quote.message}</p>
-			<p>{formatTime(quote.time)}</p>
+		<div className="quote-item">
+			<div className="quote-header">
+				<h3 className="quote-name">{quote.name}</h3>
+				<span className="quote-time">{formatTime(quote.time)}</span>
+			</div>
+			<p className="quote-message">{displayMessage}</p>
+			{isLong && (
+				<button 
+					className="expand-button"
+					onClick={() => setIsExpanded(!isExpanded)}
+				>
+					{isExpanded ? "Show Less" : "Show More"}
+				</button>
+			)}
 		</div>
 	);
 }

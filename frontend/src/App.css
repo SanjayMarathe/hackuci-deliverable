@@ -49,3 +49,31 @@ form button:hover {
 form button:active {
 	background-color: #2a5f8f;
 }
+
+.messages {
+	margin-top: 1.5rem;
+	max-width: 800px;
+}
+
+#quote-filter {
+	padding: 0.5rem 0.75rem;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 1rem;
+	margin-left: 0.5rem;
+	background-color: white;
+	cursor: pointer;
+	transition: border-color 0.2s;
+}
+
+#quote-filter:focus {
+	outline: none;
+	border-color: #4a90e2;
+	box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+h2 {
+	margin-top: 2rem;
+	margin-bottom: 1rem;
+	color: #333;
+}
