@@ -52,6 +52,7 @@ def get_quotes(max_age: Optional[str] = Query(None, description="Maximum age fil
     now = datetime.now()
     all_quotes = database["quotes"]
     
+
     if max_age is None or max_age == "all":
         return {"quotes": all_quotes}
     
