@@ -41,26 +41,15 @@ def post_message(name: str = Form(), message: str = Form()) -> RedirectResponse:
     """
     now = datetime.now()
     quote = Quote(name=name, message=message, time=now.isoformat(timespec="seconds"))
-    
-    with open("data/database.json", "r") as file:
-        file_data = json.load(file)
-    
-    file_data.setdefault("quotes", []).append(quote)
-    
-    with open("data/database.json", "w") as file:
-        json.dump(file_data, file, indent="\t")
-    
     database["quotes"].append(quote)
 
     # You may modify the return value as needed to support other functionality
-    return RedirectResponse("/", status.HTTP_201_CREATED)
+    return RedirectResponse("/", status.HTTP_303_SEE_OTHER)
 
 
 @app.get("/quotes")
 def get_quotes(max_age: Optional[str] = Query(None, description="Maximum age filter: week, month, year, or all")):
-    with open("data/database.json") as file:
-        file_data = json.load(file)
-        all_quotes = file_data.get("quotes", [])
+    all_quotes = database.get("quotes", [])
     
     now = datetime.now()
 
