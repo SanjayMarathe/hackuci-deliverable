@@ -1,7 +1,7 @@
+import json
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from typing import AsyncIterator, Optional
-
 from fastapi import FastAPI, Form, Query, status
 from fastapi.responses import RedirectResponse
 from typing_extensions import TypedDict
@@ -49,9 +49,11 @@ def post_message(name: str = Form(), message: str = Form()) -> RedirectResponse:
 
 @app.get("/quotes")
 def get_quotes(max_age: Optional[str] = Query(None, description="Maximum age filter: week, month, year, or all")):
-    now = datetime.now()
-    all_quotes = database["quotes"]
+    with open("data/database.json") as file:
+        file_data = json.load(file)
+        all_quotes = file_data.get("quotes", [])
     
+    now = datetime.now()
 
     if max_age is None or max_age == "all":
         return {"quotes": all_quotes}

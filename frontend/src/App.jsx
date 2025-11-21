@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import QuoteItem from "./QuoteItem";
 
 function App() {
 	const [quotes, setQuotes] = useState([]);
@@ -12,12 +13,20 @@ function App() {
 	}, [maxAge]);
 
 	const fetchQuotes = async () => {
-		const url = maxAge === "all" 
-			? "/api/quotes" 
-			: `/api/quotes?max_age=${maxAge}`;
-		const response = await fetch(url);
-		const data = await response.json();
-		setQuotes(data.quotes || []);
+		try {
+			const url = maxAge === "all" 
+				? "/api/quotes" 
+				: `/api/quotes?max_age=${maxAge}`;
+			const response = await fetch(url);
+			if (!response.ok) {
+				console.error("Failed to fetch quotes:", response.status, response.statusText);
+				return;
+			}
+			const data = await response.json();
+			setQuotes(data.quotes || []);
+		} catch (error) {
+			console.error("Error fetching quotes:", error);
+		}
 	};
 
 	const handleSubmit = async (e) => {
@@ -42,29 +51,6 @@ function App() {
 		}
 	};
 
-	const formatTime = (timeString) => {
-		const date = new Date(timeString);
-		const now = new Date();
-		const diffMs = now - date;
-		const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-		
-		if (diffDays === 0) {
-			return "Today";
-		} else if (diffDays === 1) {
-			return "Yesterday";
-		} else if (diffDays < 7) {
-			return `${diffDays} days ago`;
-		} else if (diffDays < 30) {
-			const weeks = Math.floor(diffDays / 7);
-			return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
-		} else if (diffDays < 365) {
-			const months = Math.floor(diffDays / 30);
-			return `${months} month${months > 1 ? "s" : ""} ago`;
-		} else {
-			const years = Math.floor(diffDays / 365);
-			return `${years} year${years > 1 ? "s" : ""} ago`;
-		}
-	};
 
 	return (
 		<div className="App">
@@ -107,11 +93,7 @@ function App() {
 			</select>
 			<div className="messages">
 				{quotes.map((quote, index) => (
-					<div key={index}>
-						<p>{quote.name}</p>
-						<p>{quote.message}</p>
-						<p>{formatTime(quote.time)}</p>
-					</div>
+					<QuoteItem key={index} quote={quote} />
 				))}
 			</div>
 		</div>
