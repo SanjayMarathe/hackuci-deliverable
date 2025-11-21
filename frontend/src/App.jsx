@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Snackbar, Alert } from "@mui/material";
 import "./App.css";
 import QuoteItem from "./QuoteItem";
+import quotebookLogo from "./images/quotebook.png";
 
 function App() {
 	const [quotes, setQuotes] = useState([]);
@@ -67,6 +68,7 @@ function App() {
 
 	return (
 		<div className="App">
+			<img src={quotebookLogo} alt="Quote Book Logo" className="logo" />
 			<h1>Hack at UCI Tech Deliverable</h1>
 
 			<h2>Submit a quote</h2>
